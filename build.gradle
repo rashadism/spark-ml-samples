@@ -13,9 +13,14 @@ subprojects {
     mavenLocal()
     mavenCentral()
 
-    maven {
-      url "http://dl.bintray.com/spark-packages/maven"
+    flatDir {
+        dirs "${rootProject.projectDir}/spark-distributed-library/libs"
     }
+    
+
+    // maven {
+    //   url "http://dl.bintray.com/spark-packages/maven"
+    // }
   }
 }
 

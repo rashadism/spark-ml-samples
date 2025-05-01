@@ -1,5 +1,10 @@
 buildscript {
-    repositories { jcenter() }
+    repositories { 
+        jcenter()
+        flatDir {
+            dirs 'libs'
+        } 
+    }
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:'
     }
@@ -34,7 +39,9 @@ dependencies {
     compile("org.apache.spark:spark-mllib_$apacheSparkScalaVersion:$apacheSparkVersion")
 
     compile("ch.qos.logback:logback-classic:$logbackVersion")
-    compile("master:spark-stemming_2.10:0.1.1")
+    // compile("master:spark-stemming_2.10:0.1.1")
+    compile name: 'spark-stemming-0.1.1'
+
 }
 
 configurations {

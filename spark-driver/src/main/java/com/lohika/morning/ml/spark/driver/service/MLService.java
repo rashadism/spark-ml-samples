@@ -1,19 +1,16 @@
 package com.lohika.morning.ml.spark.driver.service;
 
 import java.io.IOException;
+
 import org.apache.spark.ml.PipelineModel;
-import org.apache.spark.ml.clustering.KMeans;
-import org.apache.spark.ml.clustering.KMeansModel;
-import org.apache.spark.ml.regression.LinearRegression;
-import org.apache.spark.ml.regression.LinearRegressionModel;
-import org.apache.spark.ml.regression.LinearRegressionTrainingSummary;
 import org.apache.spark.ml.tuning.TrainValidationSplitModel;
 import org.apache.spark.ml.util.MLWritable;
+import org.springframework.stereotype.Component;
+
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import scala.Tuple2;
 
 @Component

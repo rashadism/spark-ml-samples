@@ -1,12 +1,14 @@
 package com.lohika.morning.ml.spark.driver.service.lyrics.pipeline;
 
 import static com.lohika.morning.ml.spark.distributed.library.function.map.lyrics.Column.*;
-import com.lohika.morning.ml.spark.driver.service.lyrics.transformer.*;
+
 import java.util.Map;
+
+import org.apache.spark.ml.Transformer;
+
 import org.apache.spark.ml.Pipeline;
 import org.apache.spark.ml.PipelineModel;
 import org.apache.spark.ml.PipelineStage;
-import org.apache.spark.ml.Transformer;
 import org.apache.spark.ml.classification.LogisticRegression;
 import org.apache.spark.ml.classification.LogisticRegressionModel;
 import org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator;
@@ -15,12 +17,14 @@ import org.apache.spark.ml.feature.Tokenizer;
 import org.apache.spark.ml.feature.Word2Vec;
 import org.apache.spark.ml.feature.Word2VecModel;
 import org.apache.spark.ml.param.ParamMap;
+import org.apache.spark.ml.tuning.ParamGridBuilder;
 import org.apache.spark.ml.tuning.TrainValidationSplit;
 import org.apache.spark.ml.tuning.TrainValidationSplitModel;
-import org.apache.spark.ml.tuning.ParamGridBuilder;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.springframework.stereotype.Component;
+
+import com.lohika.morning.ml.spark.driver.service.lyrics.transformer.*;
 
 @Component("LogisticRegressionPipeline")
 public class LogisticRegressionPipeline extends CommonLyricsPipeline {

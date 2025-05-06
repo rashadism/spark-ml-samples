@@ -1,21 +1,23 @@
 package com.lohika.morning.ml.spark.driver.service.lyrics.pipeline;
 
 import static com.lohika.morning.ml.spark.distributed.library.function.map.lyrics.Column.*;
-import com.lohika.morning.ml.spark.driver.service.MLService;
-import com.lohika.morning.ml.spark.driver.service.lyrics.Genre;
-import com.lohika.morning.ml.spark.driver.service.lyrics.GenrePrediction;
-import java.nio.file.Paths;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.spark.ml.PipelineModel;
 import org.apache.spark.ml.linalg.DenseVector;
 import org.apache.spark.ml.tuning.TrainValidationSplitModel;
 import org.apache.spark.sql.*;
-import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.api.java.UDF1;
+import org.apache.spark.sql.types.DataTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+
+import com.lohika.morning.ml.spark.driver.service.MLService;
+import com.lohika.morning.ml.spark.driver.service.lyrics.Genre;
+import com.lohika.morning.ml.spark.driver.service.lyrics.GenrePrediction;
 
 public abstract class CommonLyricsPipeline implements LyricsPipeline {
 

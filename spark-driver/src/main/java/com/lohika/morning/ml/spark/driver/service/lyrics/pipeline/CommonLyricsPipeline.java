@@ -63,13 +63,12 @@ public abstract class CommonLyricsPipeline {
         if (Arrays.asList(predictionsDataset.columns()).contains("probability")) {
             final DenseVector probability = predictionRow.getAs("probability");
 
-            genreProbabilities.put("pop", probability.apply(0));
-            genreProbabilities.put("country", probability.apply(1));
-            genreProbabilities.put("blues", probability.apply(2));
-            genreProbabilities.put("jazz", probability.apply(3));
-            genreProbabilities.put("reggae", probability.apply(4));
-            genreProbabilities.put("rock", probability.apply(5));
-            genreProbabilities.put("hiphop", probability.apply(6));
+            for (Genre genre : Genre.values()) {
+                if (genre.getValue() < 0 || genre.getValue().intValue() >= probability.size()) {
+                    continue;
+                }
+                genreProbabilities.put(genre.getCode(), probability.apply(genre.getValue().intValue()));
+            }
 
             System.out.println("Probabilities: " + genreProbabilities);
             System.out.println("------------------------------------------------\n");
@@ -92,13 +91,9 @@ public abstract class CommonLyricsPipeline {
                 .filter(functions.col("lyrics").contains(" "));
 
         Map<String, Double> genreToLabel = new HashMap<>();
-        genreToLabel.put("pop", Genre.POP.getValue());
-        genreToLabel.put("country", Genre.COUNTRY.getValue());
-        genreToLabel.put("blues", Genre.BLUES.getValue());
-        genreToLabel.put("jazz", Genre.JAZZ.getValue());
-        genreToLabel.put("reggae", Genre.REGGAE.getValue());
-        genreToLabel.put("rock", Genre.ROCK.getValue());
-        genreToLabel.put("hip hop", Genre.HIPHOP.getValue());
+        for (Genre genre : Genre.values()) {
+            genreToLabel.put(genre.getCode(), genre.getValue());
+        }
 
         UDF1<String, Double> mapGenreToLabel = (String genre) -> genreToLabel.getOrDefault(genre.toLowerCase(), -1.0);
         sparkSession.udf().register("mapGenreToLabel", mapGenreToLabel, DataTypes.DoubleType);

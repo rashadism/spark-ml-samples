@@ -17,3 +17,5 @@ target/
 # Grale
 build/
 .gradle
+
+client/

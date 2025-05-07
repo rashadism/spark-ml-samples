@@ -14,13 +14,13 @@ public class LyricsService {
     @Resource(name = "${lyrics.pipeline}")
     private LogisticRegressionPipeline pipeline;
 
-    public Map<String, Object> classifyLyrics() {
-        TrainValidationSplitModel model = pipeline.classify();
+    public Map<String, Object> classifyLyrics(String dataset) {
+        TrainValidationSplitModel model = pipeline.classify(dataset);
         return pipeline.getModelStatistics(model);
     }
 
     public GenrePrediction predictGenre(final String unknownLyrics, String dataset) {
-        return pipeline.predict(unknownLyrics);
+        return pipeline.predict(unknownLyrics, dataset);
     }
 
 }

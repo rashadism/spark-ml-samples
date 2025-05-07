@@ -2,6 +2,8 @@ package com.lohika.morning.ml.spark.driver.service.lyrics.pipeline;
 
 import static com.lohika.morning.ml.spark.distributed.library.function.map.lyrics.Column.*;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +35,7 @@ public abstract class CommonLyricsPipeline {
     @Value("${lyrics.model.directory.path}")
     private String lyricsModelDirectoryPath;
 
-    public GenrePrediction predict(final String unknownLyrics) {
+    public GenrePrediction predict(final String unknownLyrics, String dataset) {
         String lyrics[] = unknownLyrics.split("\\r?\\n");
         Dataset<String> lyricsDataset = sparkSession.createDataset(Arrays.asList(lyrics),
                 Encoders.STRING());
@@ -42,8 +44,8 @@ public abstract class CommonLyricsPipeline {
                 .withColumn(LABEL.getName(), functions.lit(Genre.UNKNOWN.getValue()))
                 .withColumn(ID.getName(), functions.lit("unknown.txt"));
 
-        // Load the model
-        TrainValidationSplitModel model = mlService.loadModel(getModelDirectory());
+        Path modelPath = Paths.get(getModelDirectory(), dataset);
+        TrainValidationSplitModel model = mlService.loadModel(modelPath.toString());
         getModelStatistics(model);
 
         PipelineModel bestModel = (PipelineModel) model.bestModel();
@@ -56,13 +58,11 @@ public abstract class CommonLyricsPipeline {
         final Double prediction = predictionRow.getAs("prediction");
         System.out.println("Prediction: " + Double.toString(prediction));
 
-        // Prepare a map for the genre probabilities
         Map<String, Double> genreProbabilities = new HashMap<>();
 
         if (Arrays.asList(predictionsDataset.columns()).contains("probability")) {
             final DenseVector probability = predictionRow.getAs("probability");
 
-            // Assuming the probability vector corresponds to each genre in the order
             genreProbabilities.put("pop", probability.apply(0));
             genreProbabilities.put("country", probability.apply(1));
             genreProbabilities.put("blues", probability.apply(2));
@@ -81,10 +81,11 @@ public abstract class CommonLyricsPipeline {
         return new GenrePrediction(getGenre(prediction).getName());
     }
 
-    Dataset<Row> readLyricsCSV() {
+    Dataset<Row> readLyricsCSV(String dataset) {
+        Path filePath = Paths.get(lyricsTrainingSetDirectoryPath, dataset + ".csv");
         Dataset<Row> csvData = sparkSession.read()
                 .option("header", "true")
-                .csv(lyricsTrainingSetDirectoryPath + "/Mendeley_mini.csv");
+                .csv(filePath.toString());
 
         Dataset<Row> filtered = csvData
                 .filter(functions.col("lyrics").isNotNull().and(functions.length(functions.col("lyrics")).gt(0)))
@@ -167,5 +168,5 @@ public abstract class CommonLyricsPipeline {
         return lyricsModelDirectoryPath;
     }
 
-    public abstract TrainValidationSplitModel classify();
+    public abstract TrainValidationSplitModel classify(String dataset);
 }

@@ -2,6 +2,8 @@ package com.lohika.morning.ml.spark.driver.service.lyrics.pipeline;
 
 import static com.lohika.morning.ml.spark.distributed.library.function.map.lyrics.Column.*;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 import org.apache.spark.ml.Transformer;
@@ -29,8 +31,8 @@ import com.lohika.morning.ml.spark.driver.service.lyrics.transformer.*;
 @Component("LogisticRegressionPipeline")
 public class LogisticRegressionPipeline extends CommonLyricsPipeline {
 
-        public TrainValidationSplitModel classify() {
-                Dataset<Row> sentences = readLyricsCSV();
+        public TrainValidationSplitModel classify(String dataset) {
+                Dataset<Row> sentences = readLyricsCSV(dataset);
 
                 Cleanser cleanser = new Cleanser();
 
@@ -86,7 +88,8 @@ public class LogisticRegressionPipeline extends CommonLyricsPipeline {
 
                 TrainValidationSplitModel model = trainValidationSplit.fit(sentences);
 
-                saveModel(model, getModelDirectory());
+                Path modelPath = Paths.get(getModelDirectory(), dataset);
+                saveModel(model, modelPath.toString());
 
                 return model;
         }

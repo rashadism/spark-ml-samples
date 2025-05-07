@@ -20,8 +20,9 @@ public class LyricsController {
     private LyricsService lyricsService;
 
     @RequestMapping(value = "/train", method = RequestMethod.GET)
-    ResponseEntity<Map<String, Object>> trainLyricsModel() {
-        Map<String, Object> trainStatistics = lyricsService.classifyLyrics();
+    ResponseEntity<Map<String, Object>> trainLyricsModel(
+            @RequestParam(defaultValue = "Mendeley_mini.csv", required = false) String dataset) {
+        Map<String, Object> trainStatistics = lyricsService.classifyLyrics(dataset);
 
         return new ResponseEntity<>(trainStatistics, HttpStatus.OK);
     }
@@ -29,7 +30,7 @@ public class LyricsController {
     @RequestMapping(value = "/predict", method = RequestMethod.POST)
     ResponseEntity<GenrePrediction> predictGenre(
             @RequestBody String unknownLyrics,
-            @RequestParam(defaultValue = "", required = false) String dataset) {
+            @RequestParam(defaultValue = "Mendeley_mini.csv", required = false) String dataset) {
 
         GenrePrediction genrePrediction = lyricsService.predictGenre(unknownLyrics, dataset);
 

@@ -19,7 +19,7 @@ import com.lohika.morning.ml.spark.driver.service.MLService;
 import com.lohika.morning.ml.spark.driver.service.lyrics.Genre;
 import com.lohika.morning.ml.spark.driver.service.lyrics.GenrePrediction;
 
-public abstract class CommonLyricsPipeline implements LyricsPipeline {
+public abstract class CommonLyricsPipeline {
 
     @Autowired
     protected SparkSession sparkSession;
@@ -33,7 +33,6 @@ public abstract class CommonLyricsPipeline implements LyricsPipeline {
     @Value("${lyrics.model.directory.path}")
     private String lyricsModelDirectoryPath;
 
-    @Override
     public GenrePrediction predict(final String unknownLyrics) {
         String lyrics[] = unknownLyrics.split("\\r?\\n");
         Dataset<String> lyricsDataset = sparkSession.createDataset(Arrays.asList(lyrics),
@@ -127,7 +126,6 @@ public abstract class CommonLyricsPipeline implements LyricsPipeline {
         return Genre.UNKNOWN;
     }
 
-    @Override
     public Map<String, Object> getModelStatistics(TrainValidationSplitModel model) {
         Map<String, Object> modelStatistics = new HashMap<>();
 
@@ -168,4 +166,6 @@ public abstract class CommonLyricsPipeline implements LyricsPipeline {
     String getLyricsModelDirectoryPath() {
         return lyricsModelDirectoryPath;
     }
+
+    public abstract TrainValidationSplitModel classify();
 }

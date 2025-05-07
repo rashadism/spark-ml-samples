@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/lyrics")
@@ -26,8 +27,11 @@ public class LyricsController {
     }
 
     @RequestMapping(value = "/predict", method = RequestMethod.POST)
-    ResponseEntity<GenrePrediction> predictGenre(@RequestBody String unknownLyrics) {
-        GenrePrediction genrePrediction = lyricsService.predictGenre(unknownLyrics);
+    ResponseEntity<GenrePrediction> predictGenre(
+            @RequestBody String unknownLyrics,
+            @RequestParam(defaultValue = "", required = false) String dataset) {
+
+        GenrePrediction genrePrediction = lyricsService.predictGenre(unknownLyrics, dataset);
 
         return new ResponseEntity<>(genrePrediction, HttpStatus.OK);
     }
